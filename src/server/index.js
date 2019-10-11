@@ -3,6 +3,10 @@ const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
 const gql = require('graphql-tag');
 const { buildASTSchema } = require('graphql');
+const jwt = require('express-jwt');
+const jwksRsa = require('jwks-rsa');
+const bodyParser = require('body-parser');
+const jwtAuthz = require('express-jwt-authz');
 
 const POSTS = [
 	{ author: "John Doe", body: "Hello world" },
@@ -61,6 +65,37 @@ app.use('/graphql', graphqlHTTP({
 	rootValue: root,
 	graphiql: true,
 }));
+// enable the use of request body parsing middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
+
+// Create middleware for checking the JWT
+const checkJwt = jwt({
+	// Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
+	secret: jwksRsa.expressJwtSecret({
+		cache: true,
+		rateLimit: true,
+		jwksRequestsPerMinute: 5,
+		jwksUri: `https://YOUR_DOMAIN/.well-known/jwks.json`
+	}),
+
+	// Validate the audience and the issuer.
+	audience: process.env.AUTH0_AUDIENCE,
+	issuer: `https://YOUR_DOMAIN/`,
+	algorithms: ['RS256']
+});
+
+// create timesheets upload API endpoint
+app.post('/timesheets/upload', checkJwt, jwtAuthz(['batch:upload']), function (req, res) {
+	var timesheet = req.body;
+
+	// Save the timesheet entry to the database...
+
+	//send the response
+	res.status(201).send(timesheet);
+})
 
 const port = process.env.PORT || 4000
 app.listen(port);
