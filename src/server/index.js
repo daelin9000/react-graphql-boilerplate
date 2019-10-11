@@ -5,8 +5,8 @@ const gql = require('graphql-tag');
 const { buildASTSchema } = require('graphql');
 
 const POSTS = [
-    { author: "John Doe", body: "Hello world" },
-    { author: "Jane Doe", body: "Hi, planet!" },
+	{ author: "John Doe", body: "Hello world" },
+	{ author: "Jane Doe", body: "Hi, planet!" },
 ];
 
 const schema = buildASTSchema(gql`
@@ -14,6 +14,16 @@ const schema = buildASTSchema(gql`
     posts: [Post]
     post(id: ID!): Post
   }
+
+  type Mutation {
+		submitPost(input: PostInput!): Post
+	}
+
+	input PostInput {
+		id: ID
+		author: String!
+		body: String!
+	}
 
   type Post {
     id: ID
@@ -25,16 +35,31 @@ const schema = buildASTSchema(gql`
 const mapPost = (post, id) => post && ({ id, ...post });
 
 const root = {
-    posts: () => POSTS.map(mapPost),
-    post: ({ id }) => mapPost(POSTS[id], id),
+	posts: () => POSTS.map(mapPost),
+	post: ({ id }) => mapPost(POSTS[id], id),
+	submitPost: ({ input: { id, author, body } }) => {
+		const post = { author, body };
+		let index = POSTS.length;
+
+		if (id != null && id >= 0 && id < POSTS.length) {
+			if (POSTS[id].authorId !== authorId) return null;
+
+			POSTS.splice(id, 1, post);
+			index = id;
+		} else {
+			POSTS.push(post);
+		}
+
+		return mapPost(post, index);
+	},
 };
 
 const app = express();
 app.use(cors());
 app.use('/graphql', graphqlHTTP({
-    schema,
-    rootValue: root,
-    graphiql: true,
+	schema,
+	rootValue: root,
+	graphiql: true,
 }));
 
 const port = process.env.PORT || 4000
