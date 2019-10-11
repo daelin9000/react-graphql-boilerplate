@@ -14,12 +14,12 @@ const POSTS = [
 ];
 
 const schema = buildASTSchema(gql`
-  type Query {
-    posts: [Post]
-    post(id: ID!): Post
-  }
+	type Query {
+		posts: [Post]
+		post(id: ID!): Post
+	}
 
-  type Mutation {
+	type Mutation {
 		submitPost(input: PostInput!): Post
 	}
 
@@ -29,11 +29,11 @@ const schema = buildASTSchema(gql`
 		body: String!
 	}
 
-  type Post {
-    id: ID
-    author: String
-    body: String
-  }
+	type Post {
+		id: ID
+		author: String
+		body: String
+	}
 `);
 
 const mapPost = (post, id) => post && ({ id, ...post });
@@ -46,7 +46,7 @@ const root = {
 		let index = POSTS.length;
 
 		if (id != null && id >= 0 && id < POSTS.length) {
-			if (POSTS[id].authorId !== authorId) return null;
+			if (POSTS[id].author !== author) return null;
 
 			POSTS.splice(id, 1, post);
 			index = id;
@@ -71,31 +71,30 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
+const authConfig = {
+	domain: "daelin9000.auth0.com",
+	audience: "boilerplate"
+};
+
 // Create middleware for checking the JWT
 const checkJwt = jwt({
-	// Dynamically provide a signing key based on the kid in the header and the singing keys provided by the JWKS endpoint.
 	secret: jwksRsa.expressJwtSecret({
 		cache: true,
 		rateLimit: true,
 		jwksRequestsPerMinute: 5,
-		jwksUri: `https://YOUR_DOMAIN/.well-known/jwks.json`
+		jwksUri: `https://${authConfig.domain}/.well-known/jwks.json`
 	}),
 
-	// Validate the audience and the issuer.
-	audience: process.env.AUTH0_AUDIENCE,
-	issuer: `https://YOUR_DOMAIN/`,
-	algorithms: ['RS256']
+	audience: authConfig.audience,
+	issuer: `https://${authConfig.domain}/`,
+	algorithm: ["RS256"]
 });
 
-// create timesheets upload API endpoint
-app.post('/timesheets/upload', checkJwt, jwtAuthz(['batch:upload']), function (req, res) {
-	var timesheet = req.body;
-
-	// Save the timesheet entry to the database...
-
-	//send the response
-	res.status(201).send(timesheet);
-})
+app.get("/api/external", checkJwt, jwtAuthz(['view:posts']), (req, res) => {
+	res.send({
+		msg: "Your Access Token was successfully validated!"
+	});
+});
 
 const port = process.env.PORT || 4000
 app.listen(port);

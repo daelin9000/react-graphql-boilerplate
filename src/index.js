@@ -5,7 +5,7 @@ import 'foundation-sites/dist/css/foundation.min.css'
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import client from './apollo'
-import { Auth0Provider } from "./react-auth0-wrapper";
+import { Auth0Provider } from "./wrappers/react-auth0-wrapper";
 import config from "./auth_config.json";
 
 // A function that routes the user to the right place
@@ -26,6 +26,7 @@ ReactDOM.render(
         domain={config.domain}
         client_id={config.clientId}
         redirect_uri={window.location.origin}
+        audience={config.audience}  
         onRedirectCallback={onRedirectCallback}
     >
         <ApolloProvider client={client} >

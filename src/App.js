@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
-import {
-	Button,
-	Grid,
-	Cell
-} from 'react-foundation';
+import React from 'react';
 import NavBar from "./components/NavBar";
-import { useAuth0 } from "./react-auth0-wrapper";
-import PostViewer from './PostViewer'
-import PostEditor from './PostEditor';
+import { useAuth0 } from "./wrappers/react-auth0-wrapper";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Posts from "./components/Posts";
+import Profile from "./components/Profile";
+import PrivateRoute from "./components/PrivateRoute";
+import ExternalApi from "./components/ExternalApi";
 
 const App = (props) => {
-
-	const [editing, setEditing] = useState();
 
 	const { loading } = useAuth0();
 
@@ -23,38 +19,17 @@ const App = (props) => {
 
 	return (
 		<div>
-			<header>
-				<NavBar />
-			</header>
-			<Grid>
-				<Cell small={12}>
-					<PostViewer
-						canEdit={() => true}
-						onEdit={(post) => setEditing(post)}
-					/>
-				</Cell>
-			</Grid>
-			<Grid>
-				<Cell small={12}>
-					{editing && (
-						<PostEditor
-							post={editing}
-							onClose={() => setEditing(null)}
-						/>
-					)}
-				</Cell>
-			</Grid>
-			<Grid>
-				<Cell small={6}>
-					<Button
-						className="my-2"
-						color="primary"
-						onClick={() => setEditing({})}
-					>
-						New Post
-            		</Button>
-				</Cell>
-			</Grid>
+			<BrowserRouter>
+				<header>
+					<NavBar />
+				</header>
+				<Switch>
+					<Route path="/" exact />
+					<Route path="/posts" component={Posts} />
+					<PrivateRoute path="/profile" component={Profile} />
+					<PrivateRoute path="/external-api" component={ExternalApi} />
+				</Switch>
+			</BrowserRouter>
 		</div>
 	)
 }

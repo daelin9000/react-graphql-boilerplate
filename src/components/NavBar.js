@@ -1,24 +1,27 @@
 // src/components/NavBar.js
 
 import React from "react";
-import { useAuth0 } from "../react-auth0-wrapper";
-import { Button } from 'react-foundation';
+import { Link } from "react-router-dom";
+import { useAuth0 } from "../wrappers/react-auth0-wrapper";
+import { Button, Menu, MenuItem } from 'react-foundation';
 
 const NavBar = () => {
     const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
     return (
         <div>
-            {!isAuthenticated && (
-                <Button
-                    onClick={() =>
-                        loginWithRedirect({})
+            <Menu>
+                <MenuItem><Link to="/external-api">External API</Link></MenuItem>
+                <MenuItem><Link to="/">Home</Link>&nbsp;</MenuItem>
+                <MenuItem><Link to="/posts">Posts</Link></MenuItem>
+                {isAuthenticated && <MenuItem><Link to="/profile">Profile</Link></MenuItem>}
+                <MenuItem>
+                    {isAuthenticated
+                        ? <Button onClick={() => logout()}>Log out</Button>
+                        : <Button onClick={() => loginWithRedirect({})}>Log in</Button>
                     }
-                >
-                    Log in
-                </Button>
-            )}
-            {isAuthenticated && <Button onClick={() => logout()}>Log out</Button>}
+                </MenuItem>
+            </Menu>
         </div>
     );
 };

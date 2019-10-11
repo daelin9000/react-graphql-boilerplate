@@ -1,4 +1,5 @@
 {
     "domain": "daelin9000.auth0.com",
-    "clientId": "9MXr6yMJFtycKLlOSiQ0se7UW6eQ4frs"
+    "clientId": "9MXr6yMJFtycKLlOSiQ0se7UW6eQ4frs",
+    "audience": "boilerplate"
 }
