@@ -1,15 +1,15 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState } from "react"
 import {
     Button,
     Grid,
     Cell
-} from 'react-foundation';
+} from 'react-foundation'
 import PostViewer from './PostViewer'
-import PostEditor from './PostEditor';
+import PostEditor from './PostEditor'
 
 const Posts = () => {
 
-    const [editing, setEditing] = useState();
+    const [editing, setEditing] = useState()
 
     return (
         <Fragment>
@@ -43,7 +43,7 @@ const Posts = () => {
                 </Cell>
             </Grid>
         </Fragment>
-    );
-};
+    )
+}
 
-export default Posts;
+export default Posts

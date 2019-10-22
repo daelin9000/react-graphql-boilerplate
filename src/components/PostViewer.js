@@ -1,7 +1,7 @@
-import React from 'react';
-import gql from 'graphql-tag';
-import { Query } from 'react-apollo';
-import { Grid, Cell } from 'react-foundation';
+import React from 'react'
+import gql from 'graphql-tag'
+import { Query } from 'react-apollo'
+import { Grid, Cell } from 'react-foundation'
 
 export const GET_POSTS = gql`
   query GetPosts {
@@ -11,11 +11,11 @@ export const GET_POSTS = gql`
       body
     }
   }
-`;
+`
 
 const rowStyles = (post, canEdit) => canEdit(post)
         ? { cursor: 'pointer', fontWeight: 'bold' }
-        : {};
+        : {}
 
 const PostViewer = ({ canEdit, onEdit }) => (
     <Query query={GET_POSTS}>
@@ -38,11 +38,11 @@ const PostViewer = ({ canEdit, onEdit }) => (
             </div>
         )}
     </Query>
-);
+)
 
 PostViewer.defaultProps = {
     canEdit: () => false,
     onEdit: () => null,
-};
+}
 
 export default PostViewer

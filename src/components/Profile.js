@@ -1,13 +1,13 @@
-import React, { Fragment } from "react";
-import { useAuth0 } from "../wrappers/react-auth0-wrapper";
+import React, { Fragment } from "react"
+import { useAuth0 } from "../wrappers/react-auth0-wrapper"
 
 const Profile = () => {
-    const { loading, user } = useAuth0();
+    const { loading, user } = useAuth0()
 
     if (loading || !user) {
         return (
             <div>Loading...</div>
-        );
+        )
     }
 
     return (
@@ -18,7 +18,7 @@ const Profile = () => {
             <p>{user.email}</p>
             <code>{JSON.stringify(user, null, 2)}</code>
         </Fragment>
-    );
-};
+    )
+}
 
-export default Profile;
+export default Profile

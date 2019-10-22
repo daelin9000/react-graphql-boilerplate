@@ -1,14 +1,14 @@
-import React from 'react';
-import gql from 'graphql-tag';
+import React from 'react'
+import gql from 'graphql-tag'
 import {
     Button,
     Label,
     Grid,
     Cell
-} from 'react-foundation';
-import { Form as FinalForm, Field } from 'react-final-form';
-import client from '../apollo';
-import { GET_POSTS } from './PostViewer';
+} from 'react-foundation'
+import { Form as FinalForm, Field } from 'react-final-form'
+import client from '../apollo'
+import { GET_POSTS } from './PostViewer'
 
 const SUBMIT_POST = gql`
   mutation SubmitPost($input: PostInput!) {
@@ -16,20 +16,20 @@ const SUBMIT_POST = gql`
       id
     }
   }
-`;
+`
 
 const PostEditor = ({ post, onClose }) => (
     <FinalForm
         onSubmit={async ({ id, author, body }) => {
-            const input = { id, author, body };
+            const input = { id, author, body }
 
             await client.mutate({
                 variables: { input },
                 mutation: SUBMIT_POST,
                 refetchQueries: () => [{ query: GET_POSTS }],
-            });
+            })
 
-            onClose();
+            onClose()
         }}
         initialValues={post}
         render={({ handleSubmit, pristine, invalid }) => (
@@ -72,6 +72,6 @@ const PostEditor = ({ post, onClose }) => (
             </div>
         )}
     />
-);
+)
 
-export default PostEditor;
+export default PostEditor
